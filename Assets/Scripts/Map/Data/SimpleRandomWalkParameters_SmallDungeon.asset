@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77e0a6ca64e57cf40b61e0289ca0f6e0, type: 3}
-  m_Name: RandomWalkParameters_SmallRoom
+  m_Script: {fileID: 11500000, guid: 4784323f84408c448aa2b60f8048110e, type: 3}
+  m_Name: SimpleRandomWalkParameters_SmallDungeon
   m_EditorClassIdentifier: 
-  iterations: 100
+  iterations: 20
   walkLength: 20
   startRandomlyEachIteration: 1
