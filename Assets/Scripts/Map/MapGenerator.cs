@@ -17,6 +17,11 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 100)]
     private int cliff_pro = 5;
 
+    public GameObject spawn;
+    public GameObject finish;
+    [SerializeField]
+    List<GameObject> mapObjects = new List<GameObject>();
+
     int[,] currentMap;
 
     public void MapGenerate()
@@ -25,7 +30,7 @@ public class MapGenerator : MonoBehaviour
         RenderMap(currentMap, platform, tile);
     }
 
-    public static int[,] GenerateArray(int width, int height/*, bool empty*/)
+    public int[,] GenerateArray(int width, int height/*, bool empty*/)
     {
         int[,] map = new int[width, height];
         for (int x = 0; x < map.GetUpperBound(0); x++)
@@ -38,7 +43,7 @@ public class MapGenerator : MonoBehaviour
         return map;
     }
 
-    public static void RenderMap(int[,] map, Tilemap tilemap, TileBase tile)
+    public void RenderMap(int[,] map, Tilemap tilemap, TileBase tile)
     {
         //Clear the map (ensures we dont overlap)
         tilemap.ClearAllTiles();
@@ -57,7 +62,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public static int[,] RandomWalkTopSmoothed(int[,] map, float seed, int minSectionWidth, int cliff_pro)
+    public int[,] RandomWalkTopSmoothed(int[,] map, float seed, int minSectionWidth, int cliff_pro)
     {
         System.Random rand = new System.Random(seed.GetHashCode());
 
@@ -87,14 +92,13 @@ public class MapGenerator : MonoBehaviour
             //Increment the section width
             sectionWidth++;
 
-            //Work our way from the height down to 0
             for (int y = lastHeight; y >= 0; y--)
             {
                 map[x, y] = 1;
             }
 
             //낭떠러지
-            if (x < map.GetUpperBound(0) - 1 && !cliff)
+            if (x > 3 && x < map.GetUpperBound(0) - 3 && !cliff)//198
             {
                 if (Random.Range(0, 100) < cliff_pro)
                 {
@@ -108,7 +112,30 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        //Return the modified map
+
+        for (int i = 0; i < mapObjects.Count; i++)
+        {
+            DestroyImmediate(mapObjects[i]);
+        }
+        mapObjects.Clear();
+
+        bool spawned = false;
+
+        
+        for (int i = 0; i < mapHeight; i++) 
+        {
+            if (map[0, i] == 0 && !spawned)
+            {
+
+                GameObject d = Instantiate(spawn, new Vector3(0.5f, i + 0.5f, 0), Quaternion.identity);
+                mapObjects.Add(d);//스폰
+                spawned = true;
+            }
+        }
+
+        GameObject k = Instantiate(finish, new Vector3(mapWidth - 1.5f, 10f, 0), Quaternion.identity);
+        mapObjects.Add(k);
+
         return map;
     }
 }
