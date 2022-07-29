@@ -6,6 +6,6 @@ public class FinishManager : MonoBehaviour
 {
     void Start()
     {
-        RaycastHit2D hit = Physics2D.Raycast();
+        //RaycastHit2D hit = Physics2D.Raycast();
     }
 }
