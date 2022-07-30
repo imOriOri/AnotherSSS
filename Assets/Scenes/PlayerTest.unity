@@ -5868,8 +5868,6 @@ MonoBehaviour:
   offset: {x: 0, y: 0}
   limitMinX: -9.5
   limitMaxX: 13.5
-  limitMinY: -0.5
-  limitMaxY: 3
 --- !u!1001 &1723221515013417730
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5924,6 +5922,10 @@ PrefabInstance:
     - target: {fileID: 1723221513690082252, guid: c83824b6895df9c43b0ad6856a133380, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1723221513690082253, guid: c83824b6895df9c43b0ad6856a133380, type: 3}
+      propertyPath: isDashing
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c83824b6895df9c43b0ad6856a133380, type: 3}

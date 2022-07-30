@@ -151,7 +151,7 @@ MonoBehaviour:
   isDoubleJumping: 1
   isDashing: 0
   addJump: 2
-  trail: {fileID: 0}
+  trail: {fileID: 9054469047152636469}
   groundCheck: {fileID: 2599186320458563296}
   groundLayer:
     serializedVersion: 2
