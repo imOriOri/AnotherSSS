@@ -4,121 +4,140 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    [Header("???? ?? ??")]
-    [SerializeField]
-    private float walkSpeed;
-    [SerializeField]
-    private float runSpeed;
-    [SerializeField]
-    private float jumpSpeed;
-        
-    private float applySpeed;
+    CameraFollow camFollow;
 
-    [Header("???? ??? ??")]
+    private float horizontal;
+    private float speed = 8f;
+    private float jumpingPower = 16f;
+    private bool isFacingRight = true;
+
     public bool isDoubleJumping = false;
     public bool isDashing = false;
 
-    int jumpCount = 2;
-    bool isJumping = false;
-    bool isRunning = false;
+    public int addJump = 2;
 
-    private Rigidbody2D rigid;
+    bool canDash = true;
+    bool dashNow;
+    private float dashPower = 12f;
+    private float dashTime = 0.2f;
+    private float dashCooldown = 1f;
 
-    void Awake()
+
+    [SerializeField] private ParticleSystem trail;
+    private Rigidbody2D rb;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+
+    private void Awake()
     {
-        rigid = GetComponent<Rigidbody2D>();
-        jumpCount = 0;
-        applySpeed = walkSpeed;
+        camFollow = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFollow>();
+        groundLayer = ~groundLayer;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        Moving();
-        Jumping();
-        Running();
-        Walking();
-    }
+        if (dashNow)
+            return;
 
-    //???? ??
-    private void Moving()
-    {
-        float h = Input.GetAxisRaw("Horizontal");
+        horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (h < 0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-        else if (h > 0)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
+        Flip();
 
-        if (rigid.velocity.x > applySpeed)
+        if (Input.GetButtonDown("Jump"))//점프 시작
         {
-            rigid.velocity = new Vector2(applySpeed, rigid.velocity.y);
-        }
-        else if (rigid.velocity.x < -applySpeed)
-        {
-            rigid.velocity = new Vector2(-applySpeed, rigid.velocity.y);
-        }
-
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-
-        if (Input.GetButtonUp("Horizontal"))
-        {
-            rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.2f, rigid.velocity.y);
-        }
-    }
-
-    //???? ??
-    private void Jumping()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (!isJumping)
+            if (IsGrounded() || addJump > 0)
             {
-                if(jumpCount > 0)
+                if (isDoubleJumping && addJump > 0)//N 번째 점프
                 {
-                    if (isDoubleJumping)
-                    {
-                        rigid.AddForce(Vector3.up * jumpSpeed * 100f);
-                        jumpCount--;
-                    }
-                    else if (!isDoubleJumping)
-                    {
-                        isJumping = true;
-                        rigid.AddForce(Vector3.up * jumpSpeed * 100f);
-                    }
+                    addJump--;
                 }
+
+                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+            }
+        }
+
+        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)//점프 짧게 하기
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+        }
+
+        if (isDashing) 
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+            {
+                StartCoroutine("Dash");
             }
         }
     }
 
-    //???? ???
-    private void Running()
+    private void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (dashNow)
+            return;
+
+        rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);//기본 이동
+    }
+
+    private bool IsGrounded()//바닥 체크
+    {
+        
+        bool temp = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        if (temp) 
         {
-            applySpeed = runSpeed;
+            addJump = 2;
+        }
+            
+
+        return temp;
+    }
+
+    private void Flip()//뒤집기 및 벽 체크
+    {
+        if (dashNow)
+            return;
+
+        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+
+        Vector2 boxSize = new Vector2(1,0.9f);
+
+        if (Physics2D.BoxCast(transform.position, boxSize, 0, new Vector2(transform.localScale.x, 0), 0.1f, groundLayer))//벽이 있으면 그 방향으로 못 감
+        {
+            horizontal = 0;
         }
     }
 
-    //???? ??
-    private void Walking()
+    private IEnumerator Dash()//대쉬
     {
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            applySpeed = walkSpeed;
-        }
-    }
+        canDash = false;
+        dashNow = true;
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.name == "Platform")
-        {
-            isJumping = false;
-            jumpCount = 2; 
-        }
+        float originalGravity = rb.gravityScale;//원래 중력
+        rb.gravityScale = 0f;//중력 제거
+
+        rb.AddForce(new Vector2(transform.localScale.x * dashPower, 0), ForceMode2D.Impulse);//대쉬
+
+        camFollow.smoothSpeed = 0.5f;
+        trail.Play();//잔상 켜기
+        yield return new WaitForSeconds(dashTime);
+
+        camFollow.smoothSpeed = 3f;
+        rb.gravityScale = originalGravity;//중력 원상복구
+
+        dashNow = false;
+
+        yield return new WaitForSeconds(dashTime);
+        camFollow.smoothSpeed = 1f;
+
+        yield return new WaitForSeconds(dashCooldown);//대쉬 쿨타임
+        canDash = true;
     }
 }
 

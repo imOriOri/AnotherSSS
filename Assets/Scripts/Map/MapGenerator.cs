@@ -24,6 +24,20 @@ public class MapGenerator : MonoBehaviour
 
     int[,] currentMap;
 
+    GameObject player;
+    Camera mainCam;
+    CameraFollow camFollow;
+
+    private void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        player.transform.position = new Vector2(spawn.transform.position.x, spawn.transform.position.y + 1.2f);
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        camFollow = mainCam.GetComponent<CameraFollow>();
+
+        MapGenerate();
+    }
+
     public void MapGenerate()
     {
         currentMap = RandomWalkTopSmoothed(GenerateArray(mapWidth, mapHeight), Random.Range(0, 10000), interval, cliff_pro);
@@ -134,10 +148,23 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
+        player.transform.position = new Vector2(d.transform.position.x, d.transform.position.y);//플레이어를 스폰으로 이동
+
+
         GameObject k = Instantiate(finish, new Vector3(mapWidth - 1.5f, 10f, 0), Quaternion.identity);
-        k.GetComponent<FinishManager>().spawn = d;
         mapObjects.Add(k);
 
+        StartCoroutine("CameraReturn");
+
         return map;
+    }
+
+    IEnumerator CameraReturn() 
+    {
+        camFollow.smoothSpeed = 4;
+        player.SetActive(false);
+        yield return new WaitForSeconds(0.7f);
+        camFollow.smoothSpeed = 1;
+        player.SetActive(true);
     }
 }
