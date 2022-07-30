@@ -115,25 +115,27 @@ public class MapGenerator : MonoBehaviour
 
         for (int i = 0; i < mapObjects.Count; i++)
         {
-            DestroyImmediate(mapObjects[i]);
+            //DestroyImmediate(mapObjects[i]); //On Test
+            Destroy(mapObjects[i]); //Playing
         }
         mapObjects.Clear();
 
         bool spawned = false;
 
-        
+        GameObject d = null;
         for (int i = 0; i < mapHeight; i++) 
         {
             if (map[0, i] == 0 && !spawned)
             {
 
-                GameObject d = Instantiate(spawn, new Vector3(0.5f, i + 0.5f, 0), Quaternion.identity);
+                d = Instantiate(spawn, new Vector3(0.5f, i + 0.5f, 0), Quaternion.identity);
                 mapObjects.Add(d);//½ºÆù
                 spawned = true;
             }
         }
 
         GameObject k = Instantiate(finish, new Vector3(mapWidth - 1.5f, 10f, 0), Quaternion.identity);
+        k.GetComponent<FinishManager>().spawn = d;
         mapObjects.Add(k);
 
         return map;
