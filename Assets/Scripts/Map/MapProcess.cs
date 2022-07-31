@@ -30,6 +30,7 @@ public class MapProcess : MonoBehaviour//게임 진행관련
     {
         if (!shopOpened)
         {
+            Night(false);
             SelectMap();
         }
         else 
@@ -39,8 +40,12 @@ public class MapProcess : MonoBehaviour//게임 진행관련
             if (shopWait < 0)
             {
                 Debug.Log("밤상인이 나타났다!");
+                Night(true);
                 gameObject.GetComponent<MapGenerator>().MapGenerate(40, 5, 37, 0, 2);//상점 맵
-                Invoke("SpawnNpc", 1f);
+
+                GameObject d = Instantiate(shopKeeper, new Vector2(18, 10), Quaternion.identity);
+                gameObject.GetComponent<MapGenerator>().mapObjects.Add(d);
+
                 shopWait = 2;
             }
             else 
@@ -114,9 +119,11 @@ public class MapProcess : MonoBehaviour//게임 진행관련
         gameObject.GetComponent<MapGenerator>().MapGenerate(currentRoutine.mapWidth[solarterm], currentRoutine.mapHeight[solarterm], currentRoutine.minSectionWidth[solarterm], currentRoutine.cliff_Pro[solarterm], currentRoutine.maxCliffGap[solarterm]);
     }
 
-    void SpawnNpc() 
-    {
-        GameObject d = Instantiate(shopKeeper, new Vector2(18, 10), Quaternion.identity);
-        gameObject.GetComponent<MapGenerator>().mapObjects.Add(d);
+    void Night(bool night) 
+    {//true -> night
+        for (int i = 0; i < transform.childCount; i++) 
+        {
+            transform.GetChild(i).gameObject.SetActive(!night);
+        }
     }
 }

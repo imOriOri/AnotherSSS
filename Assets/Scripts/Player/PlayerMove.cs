@@ -82,7 +82,7 @@ public class PlayerMove : MonoBehaviour
     private bool IsGrounded()//¹Ù´Ú Ã¼Å©
     {
         
-        bool temp = Physics2D.OverlapCircle(groundCheck.position, 0.6f, groundLayer);
+        bool temp = Physics2D.OverlapCircle(groundCheck.position, 0.5f, groundLayer);
 
         if (temp) 
         {
