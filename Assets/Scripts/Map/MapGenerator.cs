@@ -9,13 +9,6 @@ public class MapGenerator : MonoBehaviour
     private Tilemap platform, Hover;
     [SerializeField]
     private TileBase tile;
-    [SerializeField]
-    private int mapWidth, mapHeight;
-    [SerializeField]
-    private int interval;
-    [SerializeField]
-    [Range(0, 100)]
-    private int cliff_pro = 5;
 
     public GameObject spawn;
     public GameObject finish;
@@ -34,13 +27,11 @@ public class MapGenerator : MonoBehaviour
         player.transform.position = new Vector2(spawn.transform.position.x, spawn.transform.position.y + 1.2f);
         mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         camFollow = mainCam.GetComponent<CameraFollow>();
-
-        MapGenerate();
     }
 
-    public void MapGenerate()
+    public void MapGenerate(int width, int height, int interval, int cliff_pro, int maxCliffGap)
     {
-        currentMap = RandomWalkTopSmoothed(GenerateArray(mapWidth, mapHeight), Random.Range(0, 10000), interval, cliff_pro);
+        currentMap = RandomWalkTopSmoothed(GenerateArray(width, height), Random.Range(0, 10000), interval, cliff_pro, maxCliffGap, width, height);
         RenderMap(currentMap, platform, tile);
     }
 
@@ -76,7 +67,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public int[,] RandomWalkTopSmoothed(int[,] map, float seed, int minSectionWidth, int cliff_pro)
+    public int[,] RandomWalkTopSmoothed(int[,] map, float seed, int minSectionWidth, int cliff_pro, int maxCliffGap, int mapWidth, int mapHeight)
     {
         System.Random rand = new System.Random(seed.GetHashCode());
 
@@ -112,12 +103,12 @@ public class MapGenerator : MonoBehaviour
             }
 
             //³¶¶°·¯Áö
-            if (x > 3 && x < map.GetUpperBound(0) - 3 && !cliff)//198
+            if (x > 3 && x < mapWidth - maxCliffGap && !cliff)
             {
                 if (Random.Range(0, 100) < cliff_pro)
                 {
                     cliff = true;
-                    x += 1;
+                    x += Random.Range(2, maxCliffGap + 1);//³¶¶°·¯Áö ±¸¸Û Å©±â
                 }
             }
             else 
@@ -162,7 +153,7 @@ public class MapGenerator : MonoBehaviour
     IEnumerator CameraReturn() 
     {
         Rigidbody2D rpd = player.GetComponent<Rigidbody2D>();
-        float defGScale = rpd.gravityScale;
+        float defGScale = 4;
 
 
         camFollow.smoothSpeed = 4;

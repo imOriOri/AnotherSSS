@@ -31,13 +31,13 @@ public class MapObject
 
 public class FinishManager : MonoBehaviour
 {
-    MapGenerator mapManager;
+    MapProcess mapManager;
     public LayerMask exceptLayer;
 
     void Start()
     {
         exceptLayer = ~exceptLayer;
-        mapManager = GameObject.FindGameObjectWithTag("MapGenerator").GetComponent<MapGenerator>();
+        mapManager = GameObject.FindGameObjectWithTag("MapGenerator").GetComponent<MapProcess>();
         Invoke("LateStart", 0.1f);
     }
 
@@ -50,7 +50,7 @@ public class FinishManager : MonoBehaviour
     {
         if (collision.CompareTag("Player")) 
         {
-            mapManager.MapGenerate();
+            mapManager.NextLevel();
         }
     }
 }

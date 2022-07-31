@@ -48,7 +48,6 @@ public class PlayerMove : MonoBehaviour
         {
             if (IsGrounded())//첫 번째 점프
             {
-                Debug.Log("D");
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
             }
             else if (isDoubleJumping && addJump > 0)//N번째 점프
@@ -83,7 +82,7 @@ public class PlayerMove : MonoBehaviour
     private bool IsGrounded()//바닥 체크
     {
         
-        bool temp = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        bool temp = Physics2D.OverlapCircle(groundCheck.position, 0.6f, groundLayer);
 
         if (temp) 
         {
