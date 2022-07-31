@@ -14,7 +14,7 @@ public class PlayerMove : MonoBehaviour
     public bool isDoubleJumping = false;
     public bool isDashing = false;
 
-    public int addJump = 2;
+    public int addJump = 1;
 
     bool canDash = true;
     bool dashNow;
@@ -46,13 +46,14 @@ public class PlayerMove : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))//점프 시작
         {
-            if (IsGrounded() || addJump > 0)
+            if (IsGrounded())//첫 번째 점프
             {
-                if (isDoubleJumping && addJump > 0)//N 번째 점프
-                {
-                    addJump--;
-                }
-
+                Debug.Log("D");
+                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+            }
+            else if (isDoubleJumping && addJump > 0)//N번째 점프
+            {
+                addJump--;
                 rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
             }
         }
@@ -66,7 +67,7 @@ public class PlayerMove : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
             {
-                StartCoroutine("Dash");
+                StartCoroutine(Dash());
             }
         }
     }
@@ -86,7 +87,7 @@ public class PlayerMove : MonoBehaviour
 
         if (temp) 
         {
-            addJump = 2;
+            addJump = 1;
         }
             
 

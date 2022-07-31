@@ -161,10 +161,25 @@ public class MapGenerator : MonoBehaviour
 
     IEnumerator CameraReturn() 
     {
+        Rigidbody2D rpd = player.GetComponent<Rigidbody2D>();
+        float defGScale = rpd.gravityScale;
+
+
         camFollow.smoothSpeed = 4;
-        player.SetActive(false);
-        yield return new WaitForSeconds(0.7f);
+        player.GetComponent<SpriteRenderer>().enabled = false;
+
+        rpd.velocity = Vector2.zero;
+        rpd.gravityScale = 0;
+
+        for (int i = 0; i < 7; i++) //대쉬와 충돌 방지
+        {
+            rpd.gravityScale = 0;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        rpd.gravityScale = defGScale;
+
         camFollow.smoothSpeed = 1;
-        player.SetActive(true);
+        player.GetComponent<SpriteRenderer>().enabled = true;
     }
 }

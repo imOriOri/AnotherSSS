@@ -148,9 +148,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718c334a1236c1f43a854816e25ded79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isDoubleJumping: 1
+  isDoubleJumping: 0
   isDashing: 0
-  addJump: 2
+  addJump: 1
   trail: {fileID: 9054469047152636469}
   groundCheck: {fileID: 2599186320458563296}
   groundLayer:
