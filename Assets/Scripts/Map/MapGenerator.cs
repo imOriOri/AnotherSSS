@@ -13,7 +13,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject spawn;
     public GameObject finish;
     [SerializeField]
-    List<GameObject> mapObjects = new List<GameObject>();
+    public List<GameObject> mapObjects = new List<GameObject>();
 
     int[,] currentMap;
 
@@ -144,6 +144,8 @@ public class MapGenerator : MonoBehaviour
 
         GameObject k = Instantiate(finish, new Vector3(mapWidth - 1.5f, 10f, 0), Quaternion.identity);
         mapObjects.Add(k);
+
+        camFollow.limitMaxX = mapWidth - 1.5f - 17.3f;//카메라제한
 
         StartCoroutine("CameraReturn");
 

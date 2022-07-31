@@ -358,7 +358,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
+  shopOpened: 0
   mapRoutines: []
+  shopKeeper: {fileID: 9062725161712948021, guid: 6ba7531d53b3cd649ac6ce025fe3d36e, type: 3}
 --- !u!1 &1617528587915360771
 GameObject:
   m_ObjectHideFlags: 0

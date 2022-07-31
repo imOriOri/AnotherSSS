@@ -30,19 +30,6 @@ public class DialogueTrigger : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (shopKeeper) 
-        {
-            Invoke("LateStart", 0.1f);
-        }
-    }
-
-    void LateStart() 
-    {
-        MapObject.DownToGround(gameObject, exceptLayer);
-    }
-
     private void Update()
     {
         if (talked && Input.GetKeyDown(KeyCode.E))
