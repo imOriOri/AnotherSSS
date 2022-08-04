@@ -8,4 +8,25 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Title.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: d49fc18b2e91d4b4386f068352de885a
+  - enabled: 1
+    path: Assets/Scenes/Ending.unity
+    guid: 2961d80802244c149998ed33b41f17f2
+  - enabled: 1
+    path: Assets/Scenes/Dead.unity
+    guid: 27a8d40d0b556fb408d7cf79a504159d
+  - enabled: 1
+    path: Assets/Scenes/Boss/Autumn.unity
+    guid: 6b62fc8b41e3fc1458d945bf313aa34a
+  - enabled: 1
+    path: Assets/Scenes/Boss/Spring.unity
+    guid: 1567f48a3df9e1246abea337ec4d9fb9
+  - enabled: 1
+    path: Assets/Scenes/Boss/Summer.unity
+    guid: 8cde062541af326478ea32af3fccd8b2
+  - enabled: 1
+    path: Assets/Scenes/Boss/Winter.unity
+    guid: 626db9b3828f8524690ec2fa59cee17c
   m_configObjects: {}

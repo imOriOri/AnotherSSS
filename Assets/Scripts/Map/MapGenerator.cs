@@ -21,7 +21,7 @@ public class MapGenerator : MonoBehaviour
     Camera mainCam;
     CameraFollow camFollow;
 
-    private void Start()
+    private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = new Vector2(spawn.transform.position.x, spawn.transform.position.y + 1.2f);
@@ -114,7 +114,7 @@ public class MapGenerator : MonoBehaviour
             }
 
             //낭떠러지
-            if (x > 3 && x < mapWidth - maxCliffGap && !cliff)
+            if (x > 3 && x < mapWidth - maxCliffGap - 3 && !cliff)
             {
                 if (Random.Range(0, 100) < cliff_pro)
                 {
@@ -150,10 +150,10 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        player.transform.position = new Vector2(d.transform.position.x, d.transform.position.y);//플레이어를 스폰으로 이동
+        player.transform.position = new Vector2(d.transform.position.x, d.transform.position.y + 0.5f);//플레이어를 스폰으로 이동
 
 
-        GameObject k = Instantiate(finish, new Vector3(mapWidth - 1.5f, 10f, 0), Quaternion.identity);
+        GameObject k = Instantiate(finish, new Vector3(mapWidth - 1.5f, mapHeight, 0), Quaternion.identity);
         mapObjects.Add(k);
 
         camFollow.limitMaxX = mapWidth - 1.5f - 17.3f;//카메라제한
@@ -165,21 +165,9 @@ public class MapGenerator : MonoBehaviour
 
     IEnumerator CameraReturn() 
     {
-        Rigidbody2D rpd = player.GetComponent<Rigidbody2D>();
-        float defGScale = 4;
-
-
         camFollow.smoothSpeed = 4;
-        rpd.velocity = Vector2.zero;
-        rpd.gravityScale = 0;
 
-        for (int i = 0; i < 7; i++) //대쉬와 충돌 방지
-        {
-            rpd.gravityScale = 0;
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        rpd.gravityScale = defGScale;
+        yield return new WaitForSeconds(0.7f);
 
         camFollow.smoothSpeed = 1;
     }

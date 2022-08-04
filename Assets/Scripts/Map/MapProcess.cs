@@ -1,24 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 public class MapProcess : MonoBehaviour//게임 진행관련
 {
-    public int level;
+    public static int level = 0;
     int solarterm;
     string lastSolar;
     public bool shopOpened;
     int shopWait = 2;
+    bool isShop;
 
     [SerializeField]
     MapRoutine[] mapRoutines;
     [SerializeField]
     public GameObject shopKeeper;
+    Light2D playerLight;
+    
 
     // Start is called before the first frame update
     void Awake()
     {
         mapRoutines = Resources.LoadAll<MapRoutine>("MapData");
+        playerLight = GameObject.FindGameObjectWithTag("Player").GetComponent<Light2D>();
     }
 
     private void Start()
@@ -28,6 +34,8 @@ public class MapProcess : MonoBehaviour//게임 진행관련
 
     public void NextLevel() 
     {
+        isShop = false;
+
         if (!shopOpened)
         {
             Night(false);
@@ -39,6 +47,7 @@ public class MapProcess : MonoBehaviour//게임 진행관련
             shopOpened = false;
             if (shopWait < 0)
             {
+                isShop = true;
                 Debug.Log("밤상인이 나타났다!");
                 Night(true);
                 gameObject.GetComponent<MapGenerator>().MapGenerate(40, 5, 37, 0, 2);//상점 맵
@@ -55,9 +64,27 @@ public class MapProcess : MonoBehaviour//게임 진행관련
         }
     }
 
-    void SelectMap() 
+    void SelectMap()
     {
         level++;//3단위로 절기가 바뀜 맵은 Level 1부터 시작
+        
+        Debug.Log(level);
+
+        switch(level) //보스
+        {
+            case 18:
+                    SceneManager.LoadScene("Spring");
+                return;
+            case 36:
+                    SceneManager.LoadScene("Summer");
+                return;
+            case 54:
+                    SceneManager.LoadScene("Autumn");
+                return;
+            case 72:
+                    SceneManager.LoadScene("Winter");
+                return;
+        }
 
         MapRoutine currentRoutine = null;
 
@@ -116,7 +143,16 @@ public class MapProcess : MonoBehaviour//게임 진행관련
 
         Debug.Log(currentRoutine.SolarTerm[solarterm]);
 
-        gameObject.GetComponent<MapGenerator>().MapGenerate(currentRoutine.mapWidth[solarterm], currentRoutine.mapHeight[solarterm], currentRoutine.minSectionWidth[solarterm], currentRoutine.cliff_Pro[solarterm], currentRoutine.maxCliffGap[solarterm]);
+        if (Random.Range(0, 2) == 0 && level % 2 == 0)//50%확률 짝수번째 일 경우 하수구
+        {
+            Night(true);
+            gameObject.GetComponent<MapGenerator>().MapGenerate(currentRoutine.mapWidth[solarterm], 3, currentRoutine.mapWidth[solarterm], currentRoutine.cliff_Pro[solarterm], currentRoutine.maxCliffGap[solarterm]);
+        }
+        else 
+        {
+            Night(false);
+            gameObject.GetComponent<MapGenerator>().MapGenerate(currentRoutine.mapWidth[solarterm], currentRoutine.mapHeight[solarterm], currentRoutine.minSectionWidth[solarterm], currentRoutine.cliff_Pro[solarterm], currentRoutine.maxCliffGap[solarterm]);   
+        }
     }
 
     void Night(bool night) 
@@ -124,6 +160,11 @@ public class MapProcess : MonoBehaviour//게임 진행관련
         for (int i = 0; i < transform.childCount; i++) 
         {
             transform.GetChild(i).gameObject.SetActive(!night);
+        }
+
+        if (!isShop) 
+        {
+            playerLight.enabled = night;
         }
     }
 }
