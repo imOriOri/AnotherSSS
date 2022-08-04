@@ -37,6 +37,11 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
+        if (transform.position.y < -8) 
+        {
+            Debug.Log("DEAD");
+        }
+
         if (dashNow)
             return;
 

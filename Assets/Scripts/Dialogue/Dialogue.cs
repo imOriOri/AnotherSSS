@@ -6,7 +6,6 @@ using UnityEngine;
 public class Dialogue : MonoBehaviour
 {
     public GameObject window;
-    public GameObject indicator;
 
     public List<string> dialogues;
 
@@ -20,14 +19,17 @@ public class Dialogue : MonoBehaviour
     public float writingSpeed;
     public float waitForNext;
 
+    public float maxX;//580
+    public float minX;//150
+    float currentX;
+
+    public RectTransform rt;
+    public RectTransform drt;
+    public DialogueHold dHolder;
+
     private void ToggleWindow(bool show) 
     {
         window.SetActive(show);
-    }
-
-    public void ToggleIndicator(bool show)
-    {
-        indicator.SetActive(show);
     }
 
 
@@ -38,7 +40,6 @@ public class Dialogue : MonoBehaviour
 
         started = true;
         ToggleWindow(true);
-        ToggleIndicator(false);
 
         GetDialogue(0);
     }
@@ -47,6 +48,9 @@ public class Dialogue : MonoBehaviour
     {
         index = i;
         charIndex = 0;
+        currentX = 0;
+        rt.sizeDelta = new Vector2(minX + 30, 60);
+        drt.sizeDelta = new Vector2(minX, 70);
 
         dialogueText.text = string.Empty;
 
@@ -56,7 +60,8 @@ public class Dialogue : MonoBehaviour
     public void EnDialogue() 
     {
         index = 0;
-        ToggleWindow(false);
+        Destroy(gameObject);
+        dHolder.isTalk = false;
     }
 
     IEnumerator Writing() 
@@ -65,6 +70,15 @@ public class Dialogue : MonoBehaviour
 
         dialogueText.text += currentDialogue[charIndex];
         charIndex++;
+
+        currentX += 15;
+        if (minX + currentX >= maxX) 
+        {
+            currentX = maxX - minX;
+        }
+
+        rt.sizeDelta = new Vector2(minX + currentX + 30, 50);
+        drt.sizeDelta = new Vector2(minX + currentX, 20);
 
         if (charIndex < currentDialogue.Length)
         {
@@ -92,7 +106,8 @@ public class Dialogue : MonoBehaviour
 
     private void Awake()
     {
-        ToggleIndicator(false);
+        rt = GetComponent<RectTransform>();
+        drt = dialogueText.GetComponent<RectTransform>();
         ToggleWindow(false);
     }
 }

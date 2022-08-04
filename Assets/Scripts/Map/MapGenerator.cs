@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField]
-    private Tilemap platform, Hover;
+    private Tilemap platform, barrier;
     [SerializeField]
     private TileBase tile;
 
@@ -64,6 +64,17 @@ public class MapGenerator : MonoBehaviour
                     tilemap.SetTile(new Vector3Int(x, y, 0), tile);
                 }
             }
+        }
+
+        barrier.ClearAllTiles();
+
+        for (int y = 0; y < 30; y++) 
+        {
+            barrier.SetTile(new Vector3Int(-1, y, 0), tile);
+        }
+        for (int y = 0; y < 30; y++)
+        {
+            barrier.SetTile(new Vector3Int(map.GetUpperBound(0), y, 0), tile);
         }
     }
 
@@ -159,8 +170,6 @@ public class MapGenerator : MonoBehaviour
 
 
         camFollow.smoothSpeed = 4;
-        player.GetComponent<SpriteRenderer>().enabled = false;
-
         rpd.velocity = Vector2.zero;
         rpd.gravityScale = 0;
 
@@ -173,6 +182,5 @@ public class MapGenerator : MonoBehaviour
         rpd.gravityScale = defGScale;
 
         camFollow.smoothSpeed = 1;
-        player.GetComponent<SpriteRenderer>().enabled = true;
     }
 }
