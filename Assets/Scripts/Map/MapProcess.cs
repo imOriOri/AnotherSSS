@@ -67,6 +67,7 @@ public class MapProcess : MonoBehaviour//게임 진행관련
     void SelectMap()
     {
         level++;//3단위로 절기가 바뀜 맵은 Level 1부터 시작
+        PlayerPrefs.SetInt("level",level);
         
         Debug.Log(level);
 
