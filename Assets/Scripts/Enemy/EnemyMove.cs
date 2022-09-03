@@ -9,6 +9,7 @@ public class EnemyMove : MonoBehaviour
     int nextMove;
 
     public float moveSpeed;
+    public Transform target;
     bool isTracing;
 
     private void Awake() 
@@ -21,7 +22,7 @@ public class EnemyMove : MonoBehaviour
 
     private void FixedUpdate() 
     {
-        rigid.velocity = new Vector2(nextMove * 2f, rigid.velocity.y);
+        rigid.velocity = new Vector2(nextMove * moveSpeed, rigid.velocity.y);
         Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.5f, rigid.position.y);
 
         Debug.DrawRay(frontVec, Vector3.down, new Color(0, 1, 0));
@@ -33,7 +34,7 @@ public class EnemyMove : MonoBehaviour
         }
     }
 
-    void Think()
+    public void Think()
     {
         nextMove = Random.Range(-1, 2);
         if(nextMove != 0)
@@ -54,22 +55,18 @@ public class EnemyMove : MonoBehaviour
         Invoke("Think", 2);
     }
 
-    private void OnTriggerEnter2D(Collider other) 
-    {
-        if(other.gameObject.tag == "Player")
-        {
-            
-            CancelInvoke();
+        private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player") {
+            CancelInvoke("Think"); 
+            if(target.position.x > transform.position.x) {
+                nextMove = 3;
+            } else if (target.position.x < transform.position.x) {
+                nextMove = -3;
+            }
         }
     }
-
-    private void OnTriggerStay2D(Collider2D other) 
-    {
-        
-    }
-
-    private void OnTriggerExit2D(Collider2D other) 
-    {
-        
+    private void OnTriggerExit2D(Collider2D collision) {
+        if (collision.gameObject.tag == "Player")
+            Think();
     }
 }
