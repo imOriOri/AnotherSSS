@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 431287169}
   - component: {fileID: 431287168}
   - component: {fileID: 431287167}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5586,6 +5586,7 @@ GameObject:
   - component: {fileID: 1780250830}
   - component: {fileID: 1780250829}
   - component: {fileID: 1780250828}
+  - component: {fileID: 1780250833}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -5605,8 +5606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c57bafc82f88a63478c764668ccb0c49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
-  ChangeMoveSpeed: 3
+  nextMove: 0
 --- !u!50 &1780250829
 Rigidbody2D:
   serializedVersion: 4
@@ -5714,13 +5714,29 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1780250827}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.48, y: -0.78, z: 0}
+  m_LocalPosition: {x: -9.86, y: -0.78, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &1780250833
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1780250827}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 8
 --- !u!1 &1823710049
 GameObject:
   m_ObjectHideFlags: 0

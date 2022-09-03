@@ -4,46 +4,72 @@ using UnityEngine;
 
 public class EnemyMove : MonoBehaviour
 {
+    Rigidbody2D rigid;
+    SpriteRenderer spriteRenderer;
+    int nextMove;
+
     public float moveSpeed;
-    public float ChangeMoveSpeed;
+    bool isTracing;
 
-    Vector3 movement;
-    int movementFlag = 0;
-
-    private void Start()
+    private void Awake() 
     {
-        StartCoroutine(ChangeMovement());
+        rigid = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        Invoke("Think", 3);
     }
 
-    private void FixedUpdate()
+    private void FixedUpdate() 
     {
-        Move();
-    }
+        rigid.velocity = new Vector2(nextMove * 2f, rigid.velocity.y);
+        Vector2 frontVec = new Vector2(rigid.position.x + nextMove * 0.5f, rigid.position.y);
 
-    private void Move()
-    {
-        Vector3 moveVelocity = Vector3.zero;
+        Debug.DrawRay(frontVec, Vector3.down, new Color(0, 1, 0));
+        RaycastHit2D rayHit = Physics2D.Raycast(frontVec, Vector3.down, 1, LayerMask.GetMask("Platform"));
 
-        if(movementFlag == 1)
+        if(rayHit.collider== null)
         {
-            moveVelocity = Vector3.left;
-            transform.localScale = new Vector3(1, 1, 1);
+            Turn();
         }
-        else if(movementFlag == 2)
-        {
-            moveVelocity = Vector3.right;
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-
-        transform.position += moveVelocity * moveSpeed * Time.deltaTime;
     }
 
-    IEnumerator ChangeMovement()
+    void Think()
     {
-        movementFlag = Random.Range(0, 3);
-        yield return new WaitForSeconds(ChangeMoveSpeed);
+        nextMove = Random.Range(-1, 2);
+        if(nextMove != 0)
+        {
+            spriteRenderer.flipX = (nextMove == 1);
+        }
 
-        StartCoroutine(ChangeMovement());
+        float nextThinkTime = Random.Range(2f, 5f);
+        Invoke("Think", nextThinkTime);
     }
 
+    void Turn()
+    {
+        nextMove = nextMove * (-1);
+        spriteRenderer.flipX = (nextMove == 1);
+
+        CancelInvoke();
+        Invoke("Think", 2);
+    }
+
+    private void OnTriggerEnter2D(Collider other) 
+    {
+        if(other.gameObject.tag == "Player")
+        {
+            
+            CancelInvoke();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other) 
+    {
+        
+    }
+
+    private void OnTriggerExit2D(Collider2D other) 
+    {
+        
+    }
 }
